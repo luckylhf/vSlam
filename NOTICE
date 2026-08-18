@@ -1,0 +1,15 @@
+vSlam 1.2
+
+Copyright 2024-2026 vSlam contributors
+
+The prerecorded narration files `tiangong_navigation/wav/1.wav` through
+`10.wav` are original vSlam project assets licensed under Apache-2.0.
+
+This product includes robot-specific configuration derived from:
+
+- Navigation2 1.1.18, licensed under Apache License 2.0 for the derived
+  nav2_bringup configuration included here.
+- rtabmap_ros 0.22.0, Copyright (c) 2010-2016 Mathieu Labbe, IntRoLab,
+  Universite de Sherbrooke, licensed under the BSD 3-Clause License.
+
+See THIRD_PARTY_NOTICES.md and the license files installed by each ROS package.

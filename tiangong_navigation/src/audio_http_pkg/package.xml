@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>audio_http_pkg</name>
+  <version>1.0.0</version>
+  <description>语音交互节点：录制语音并通过 HTTP 与大模型服务交互，支持语音唤醒和动作指令分发。</description>
+  <maintainer email="tianhong.huang@ubtrobot.com">Tianhong Huang</maintainer>
+  <license file="LICENSE">Apache-2.0</license>
+
+  <depend>rclpy</depend>
+  <depend>python3-aiohttp</depend>
+  <depend>python3-numpy</depend>
+  <depend>std_msgs</depend>
+  <exec_depend>python3-sounddevice</exec_depend>
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

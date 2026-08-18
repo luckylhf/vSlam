@@ -1,0 +1,16 @@
+[Unit]
+Description=walk_control
+
+[Service]
+# 说明：请将 User 修改为实际运行用户，ExecStart 修改为脚本实际路径
+User=nvidia
+
+WorkingDirectory=%h/code
+ExecStart=/usr/bin/env bash %h/code/scripts/startup_walk_manager.bash
+Restart=always
+Type=simple
+RestartSec=1
+StartLimitInterval=0
+
+[Install]
+WantedBy = multi-user.target

@@ -1,0 +1,73 @@
+# rtabmap.db 占位文件说明
+
+本仓库中的 `rtabmap.db` 是一个 **8KB 的空 SQLite 数据库**（无任何表和数据），
+不包含任何地图数据。RTAB-Map 会将其识别为"空地图"，定位模式下会返回无定位结果，
+但不会因数据库格式无效而崩溃。
+
+## 用途
+
+`scripts/start_robot.sh` 启动定位时会将数据库复制到 `ROS_HOME_DIR`：
+```bash
+cp "$ARM_WS_DIR/rtabmap.db" "${ROS_HOME_DIR:-$HOME/.ros}/rtabmap.db"
+```
+保留空 SQLite 文件可保证：
+1. 该拷贝命令不会因文件不存在而失败。
+2. RTAB-Map 打开时不会报"Invalid database"错误，而是正常识别为空地图。
+
+## 如何生成真实的地图数据库
+
+### 1. 建图（Mapping）模式
+
+在 ARM 端执行以下步骤，构建新地图：
+
+```bash
+# 1. 启动里程计（x86 端）
+python3 odom.py
+
+# 2. 启动相机（ARM 端）
+bash scripts/camera.sh
+
+# 3. 启动深度点云转 2D scan（ARM 端）
+ros2 launch depth2scan_pkg pointcloud_to_scan.launch.py
+
+# 4. 启动 RTAB-Map 建图（ARM 端）
+ros2 launch tiangong_nav_bringup mapping.launch.py
+```
+
+建图过程中推动机器人在场地中行走，覆盖所有需要导航的区域。
+
+### 2. 保存地图
+
+建图完成后，RTAB-Map 会自动将地图数据库保存到默认路径：
+```
+~/.ros/rtabmap.db
+```
+
+### 3. 部署地图
+
+将生成的地图数据库拷贝到工作空间，覆盖空占位文件：
+```bash
+cp ~/.ros/rtabmap.db ~/code/rtabmap.db
+```
+
+### 4. 定位（Localization）模式
+
+之后即可使用 `start_robot.sh` 启动定位+导航：
+```bash
+bash ~/code/scripts/start_robot.sh
+```
+
+## 注意事项
+
+- 空占位文件无法用于定位，首次使用必须先建图。
+- 如果更换场地，需要重新建图生成新的 `rtabmap.db`。
+- 地图数据库包含场地扫描数据，请注意不要泄露敏感场地的地图。
+- 如需重新生成空 SQLite 占位文件，可执行：
+  ```python
+  import sqlite3
+  conn = sqlite3.connect("rtabmap.db")
+  conn.execute("CREATE TABLE _p (id INTEGER)")
+  conn.execute("DROP TABLE _p")
+  conn.commit()
+  conn.close()
+  ```
